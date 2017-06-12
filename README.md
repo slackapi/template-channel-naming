@@ -2,7 +2,7 @@
 
 An example app that helps enforce channel naming conventions.
 
-![channel-naming-template](https://cloud.githubusercontent.com/assets/700173/26272667/0e73a79a-3ce4-11e7-8afd-13e852c19939.gif)
+![channel-naming](https://user-images.githubusercontent.com/700173/27057518-6b4a6d64-4f81-11e7-853c-702c803a95ee.gif)
 
 ## Setup
 
