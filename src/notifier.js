@@ -84,7 +84,7 @@ const getChannelInfo = (channelId) => {
 const sendParentNotification = (channel, parentChannelId, templateName) => {
   getChannelInfo(channel.id).then((result) => {
     const body = {
-      token: process.env.TOKEN,
+      token: process.env.SLACK_TOKEN,
       channel: parentChannelId,
       text: `A new ${templateName} channel has been created!`,
       attachments: JSON.stringify([{
