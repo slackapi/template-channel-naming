@@ -45,9 +45,7 @@ const create = (templateName, channel, responseURL) => {
 };
 
 const cancel = (responseURL) => {
-  const message = { text: 'No template being created for this channel. If you\'d ' +
-  'like to understand why channel naming conventions are important to us, please ' +
-  'take a look at this article.' };
+  const message = { text: 'No template being created for this channel :weary:' };
 
   notifier.sendMessage(message, responseURL);
 };

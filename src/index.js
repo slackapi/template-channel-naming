@@ -1,17 +1,34 @@
+'use strict';
+
 require('dotenv').config();
 
+const axios = require('axios');
 const express = require('express');
 const bodyParser = require('body-parser');
+const qs = require('querystring');
+const signature = require('./verifySignature');
 const channelTemplate = require('./channel_template');
 const notifier = require('./notifier');
 
+const apiUrl = 'https://slack.com/api';
+
 const app = express();
+
 
 /*
  * Parse application/x-www-form-urlencoded && application/json
+ * Use body-parser's `verify` callback to export a parsed raw body
+ * that you need to use to verify the signature
  */
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+
+const rawBodyBuffer = (req, res, buf, encoding) => {
+  if (buf && buf.length) {
+    req.rawBody = buf.toString(encoding || 'utf8');
+  }
+};
+
+app.use(bodyParser.urlencoded({verify: rawBodyBuffer, extended: true }));
+app.use(bodyParser.json({ verify: rawBodyBuffer }));
 
 app.get('/', (req, res) => {
   res.send('<h2>The Channel Naming app is running</h2> <p>Follow the' +
@@ -29,22 +46,25 @@ app.get('/', (req, res) => {
 app.post('/events', (req, res) => {
   switch (req.body.type) {
     case 'url_verification': {
-      res.status(200).send({ challenge: req.body.challenge });
+      res.send({ challenge: req.body.challenge });
       break;
     }
 
     case 'event_callback': {
-      if (req.body.token === process.env.SLACK_VERIFICATION_TOKEN) {
-        res.send('');
-        const event = req.body.event;
-        if (event.type === 'channel_created' || event.type === 'channel_rename') {
-          const channel = event.channel;
+      // Verify the signing secret
+      if (!signature.isVerified(req)) {
+        res.sendStatus(404);
+        return;
+      } else {
+        const { type, channel } = req.body.event;
+
+        if (type === 'channel_created' || type === 'channel_rename') {
           channelTemplate.findOrNotify(channel);
         }
-      } else { res.sendStatus(500); }
+      }
       break;
     }
-    default: res.sendStatus(500);
+    default: res.sendStatus(404);
   }
 });
 
@@ -57,42 +77,49 @@ app.post('/events', (req, res) => {
  *   - `template_channel`: User has chosen to create a new template and is now
  *      selecting a parent channel.
  */
-app.post('/interactive-message', (req, res) => {
+app.post('/interactions', (req, res) => {
   const body = JSON.parse(req.body.payload);
-  if (body.token === process.env.SLACK_VERIFICATION_TOKEN) {
-    switch (body.callback_id) {
+
+  if (!signature.isVerified(req)) {
+    res.sendStatus(404);
+    return;
+  } else {
+    const { channel, callback_id, actions, response_url } = JSON.parse(req.body.payload);
+
+    switch (callback_id) {
       case 'template_create': {
         res.send('');
-        const prefix = body.actions[0].name;
-        const action = body.actions[0].value;
+        const prefix = actions[0].name;
+        const action = actions[0].value;
 
         if (action && action === 'add') {
           // User wants to add a new template
-          channelTemplate.create(prefix, body.channel, body.response_url);
+          channelTemplate.create(prefix, channel, response_url);
         } else if (action && action === 'cancel') {
           // User has cancelled channel template creation
-          channelTemplate.cancel(body.response_url);
-        } else if (body.actions[0].selected_options) {
+          channelTemplate.cancel(response_url);
+        } else if (actions[0].selected_options) {
           // User has selected an existing template
-          const template = body.actions[0].selected_options[0].value;
-          notifier.sendRename(prefix, template, body.channel.name, body.response_url);
+          const template = actions[0].selected_options[0].value;
+          notifier.sendRename(prefix, template, channel.name, response_url);
         }
         break;
       }
       case 'template_channel': {
         res.send('');
-        const action = body.actions[0];
+        const action = actions[0];
         const parentChannel = action.selected_options[0].value;
         const templateName = action.name;
 
-        channelTemplate.addParent(templateName, parentChannel, body.channel, body.response_url);
+        channelTemplate.addParent(templateName, parentChannel, channel, response_url);
         break;
       }
-      default: res.sendStatus(500);
+      default: res.sendStatus(404);
     }
-  } else { res.sendStatus(500); }
+  }
 });
 
-app.listen(process.env.PORT, () => {
-  console.log(`App listening on port ${process.env.PORT}!`);
+
+const server = app.listen(process.env.PORT || 5000, () => {
+  console.log('Express server listening on port %d in %s mode', server.address().port, app.settings.env);
 });

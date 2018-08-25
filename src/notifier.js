@@ -1,13 +1,16 @@
+'use strict';
+
 const qs = require('querystring');
 const axios = require('axios');
 const JsonDB = require('node-json-db');
-
 const templatesDB = new JsonDB('templates', true, false);
+
+const apiUrl = 'https://slack.com/api';
 
 const postResult = (result) => { console.log(result.data); };
 
 const sendMessage = (message, url) => {
-  const postURL = url || 'https://slack.com/api/chat.postMessage';
+  const postURL = url || `${apiUrl}/chat.postMessage`;
   const params = url ? message : qs.stringify(message);
   const postMessage = axios.post(postURL, params);
   postMessage.then(postResult).catch(postResult);
@@ -21,7 +24,7 @@ const sendNotFound = (channelId, templateName) => {
   }
 
   const body = {
-    token: process.env.SLACK_TOKEN,
+    token: process.env.SLACK_ACCESS_TOKEN,
     channel: channelId,
     text: `No matching channel template found for \`${templateName}\`. Do you want to add it or use an existing template?`,
     attachments: JSON.stringify([{
@@ -55,7 +58,7 @@ const sendNotFound = (channelId, templateName) => {
 
 const sendSetParent = (channelId, templateName) => {
   const body = {
-    token: process.env.SLACK_TOKEN,
+    token: process.env.SLACK_ACCESS_TOKEN,
     channel: channelId,
     text: 'What is the primary channel for the template?',
     attachments: JSON.stringify([{
@@ -77,18 +80,17 @@ const sendSetParent = (channelId, templateName) => {
 };
 
 const getChannelInfo = (channelId) => {
-  const body = { token: process.env.SLACK_TOKEN, channel: channelId };
-  return axios.post('https://slack.com/api/channels.info', qs.stringify(body));
+  const body = { token: process.env.SLACK_ACCESS_TOKEN, channel: channelId };
+  return axios.post(`${apiUrl}/channels.info`, qs.stringify(body));
 };
 
 const sendParentNotification = (channel, parentChannelId, templateName) => {
   getChannelInfo(channel.id).then((result) => {
     const body = {
-      token: process.env.SLACK_TOKEN,
+      token: process.env.SLACK_ACCESS_TOKEN,
       channel: parentChannelId,
       text: `A new ${templateName} channel has been created!`,
       attachments: JSON.stringify([{
-        fallback: 'Upgrade your Slack client to use messages like these.',
         title: `<#${channel.id}>`,
         text: `Purpose: ${result.data.channel.purpose.value || 'Not set'}`,
       }]),
