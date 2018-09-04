@@ -1,6 +1,6 @@
 {
   "name": "slack-channel-categories-example",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Sample Slack app that uses the Events API and interactive message to help enforce channel naming conventions",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
