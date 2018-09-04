@@ -28,9 +28,9 @@ An example app that helps enforce channel naming conventions.
     * Either clone this repo and run `npm install`
     * Or visit https://glitch.com/edit/#!/remix/slack-channel-naming-blueprint
 1. Set the following environment variables in `.env` (copy from `.env.sample`):
-    * `SLACK_TOKEN`: Your app's `xoxa-` token (available on the Install App page)
-    * `PORT`: The port that you want to run the web server on
-    * `SLACK_VERIFICATION_TOKEN`: Your app's Verification Token (available on the Basic Information page)
+    * `SLACK_ACCESS_TOKEN`: Your app's `xoxa-` token (available on the Install App page)
+    * `SLACK_SIGNING_SECRET`: Your app's Verification Token (available on the Basic Information page)
+    * `PORT`: The port that you want to run the web server on (Default: 5000)
 1. If you're running the app locally:
     * Start the app (`npm start`)
 
