@@ -43,7 +43,7 @@ app.get('/', (req, res) => {
  *   - event_callback: Confirm verification token & handle `channel_create`
  *     and `channel_rename` events.
  */
-app.post('/events', (req, res) => {
+app.post('/events', (req, res) => { 
   switch (req.body.type) {
     case 'url_verification': {
       res.send({ challenge: req.body.challenge });
