@@ -8,7 +8,7 @@
   },
   "author": "Sachin Ranchod <sranchod@slack-corp.com>",
   "dependencies": {
-    "axios": "^0.16.1",
+    "axios": "^0.18.1",
     "axios-debug-log": "^0.3.0",
     "body-parser": "^1.17.1",
     "dotenv": "^4.0.0",
