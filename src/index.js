@@ -84,42 +84,48 @@ app.post('/interactions', (req, res) => {
     res.sendStatus(404);
     return;
   } else {
-    const { channel, callback_id, actions, response_url } = JSON.parse(req.body.payload);
+    
+    const { channel, actions, response_url } = JSON.parse(req.body.payload);
+    const action = actions[0];
+    
+    console.log(action);
+    
+    if(/parent_/i.test(action.action_id)) { // After "Add", set primary channel for the template
+      res.send('');
+        
+      const parentChannel = action.selected_channel;
+      const templateName = action.action_id.substring(7);
 
-    switch (callback_id) {
-      case 'template_create': {
-        res.send('');
-        const prefix = actions[0].name;
-        const action = actions[0].value;
+      channelTemplate.addParent(templateName, parentChannel, channel, response_url);
+    } 
+    else if(/rename_/i.test(action.action_id)) { // Rename channel from the saves prefix- template
+      res.send('');
 
-        if (action && action === 'add') {
-          // User wants to add a new template
-          channelTemplate.create(prefix, channel, response_url);
-        } else if (action && action === 'cancel') {
-          // User has cancelled channel template creation
-          channelTemplate.cancel(response_url);
-        } else if (actions[0].selected_options) {
-          // User has selected an existing template
-          const template = actions[0].selected_options[0].value;
-          notifier.sendRename(prefix, template, channel.name, response_url);
-        }
-        break;
-      }
-      case 'template_channel': {
-        res.send('');
-        const action = actions[0];
-        const parentChannel = action.selected_options[0].value;
-        const templateName = action.name;
+      // User has selected an existing template
+      const newPrefix = action.selected_option.value;
+      const currentPrefix = action.action_id.substring(7);
+      notifier.sendRename(currentPrefix, newPrefix, channel.name, response_url);
+    }
+    else if(action.action_id === 'template_add') {  // Add the prefix in the template DB
+      res.send('');
+      const prefix = action.value;
 
-        channelTemplate.addParent(templateName, parentChannel, channel, response_url);
-        break;
-      }
-      default: res.sendStatus(404);
+      // User wants to add a new template
+      channelTemplate.create(prefix, channel, response_url);
+
+    }
+    else if(action.action_id === 'template_cancel') { // Cancel - do nothing. just send a message.
+      res.send('');
+      // User has cancelled channel template creation
+      channelTemplate.cancel(response_url);
+    }
+    else { 
+      res.sendStatus(404);
     }
   }
 });
 
 
-const server = app.listen(process.env.PORT || 5000, () => {
+const server = app.listen(process.env.PORT || 5000, () => { 
   console.log('Express server listening on port %d in %s mode', server.address().port, app.settings.env);
 });

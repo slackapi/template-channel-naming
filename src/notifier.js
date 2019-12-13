@@ -20,62 +20,84 @@ const sendNotFound = (channelId, templateName) => {
   const templates = Object.keys(templatesDB.getData('/'));
   const options = [];
   if (templates.length > 0) {
-    templates.forEach(template => options.push({ text: template, value: template }));
+    templates.forEach(template => options.push({ text: {type: 'plain_text', text: template}, value: template }));
   }
 
+  const blocks = [
+		{
+			type: "section",
+			text: {
+				type: "mrkdwn",
+				text: `No matching channel template found for ${templateName}. Do you want to add it or use an existing template?`
+			}
+		},
+		{
+			type: "actions",
+			elements: [
+        {
+					type: "button",
+          style: "primary",
+					text: {
+						type: "plain_text",
+						text: "Add"
+					},
+					value: templateName,
+          action_id: "template_add"
+				},
+				{
+					type: "static_select",
+					action_id: `rename_${templateName}`,
+					options: options
+				},
+        {
+					type: "button",
+          style: "danger",
+					text: {
+						type: "plain_text",
+						text: "Cancel"
+					},
+					value: "cancel",
+          action_id: "template_cancel"
+				}
+			]
+		}
+	];
+  
   const body = {
     token: process.env.SLACK_ACCESS_TOKEN,
     channel: channelId,
-    text: `No matching channel template found for \`${templateName}\`. Do you want to add it or use an existing template?`,
-    attachments: JSON.stringify([{
-      text: '',
-      callback_id: 'template_create',
-      actions: [{
-        name: templateName,
-        text: 'Add',
-        type: 'button',
-        value: 'add',
-        style: 'primary',
-      },
-      {
-        name: templateName,
-        text: 'Select existing template',
-        type: 'select',
-        options,
-      },
-      {
-        name: templateName,
-        text: 'Cancel',
-        type: 'button',
-        value: 'cancel',
-        style: 'danger',
-      }],
-    }]),
+    blocks: JSON.stringify(blocks)
   };
 
   sendMessage(body);
 };
 
 const sendSetParent = (channelId, templateName) => {
+  const blocks2 = [
+		{
+			type: "section",
+			text: {
+				type: "plain_text",
+				text: "What is the primary channel for the template?"
+			}
+		},
+		{
+			type: "actions",
+			elements: [
+				{
+					type: "channels_select",
+          action_id: `parent_${templateName}`,
+				}
+			]
+		}
+	];
+  
   const body = {
     token: process.env.SLACK_ACCESS_TOKEN,
     channel: channelId,
     text: 'What is the primary channel for the template?',
-    attachments: JSON.stringify([{
-      fallback: 'Upgrade your Slack client to use messages like these.',
-      attachment_type: 'default',
-      text: '',
-      callback_id: 'template_channel',
-      actions: [
-        {
-          name: templateName,
-          text: 'Select the primary channel for the template',
-          type: 'select',
-          data_source: 'channels',
-        }],
-    }]),
+    blocks: JSON.stringify(blocks2)
   };
-
   sendMessage(body);
 };
 
@@ -89,11 +111,7 @@ const sendParentNotification = (channel, parentChannelId, templateName) => {
     const body = {
       token: process.env.SLACK_ACCESS_TOKEN,
       channel: parentChannelId,
-      text: `A new ${templateName} channel has been created!`,
-      attachments: JSON.stringify([{
-        title: `<#${channel.id}>`,
-        text: `Purpose: ${result.data.channel.purpose.value || 'Not set'}`,
-      }]),
+      text: `A new *${templateName}-* channel has been created!: #${channel.name}`
     };
     sendMessage(body);
   });
@@ -101,7 +119,9 @@ const sendParentNotification = (channel, parentChannelId, templateName) => {
 
 const sendRename = (currentPrefix, newPrefix, channelName, responseURL) => {
   const newName = channelName.replace(currentPrefix, newPrefix);
-  const body = { text: `Rename channel to *${newName}* to apply the template.` };
+  const body = { text: `Please rename channel to *${newName}* to apply the template.` };
+   // Note: The only people who can rename a channel are Team Admins, or the person that originally created the channel. 
+   // if you want to programmatically rename the channel, you need to enable a user token on behalf of the admin 
   sendMessage(body, responseURL);
 };
 

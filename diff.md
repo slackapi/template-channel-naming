@@ -2,9 +2,33 @@
 
 Now all the Blueprints examples have been updated with new Slack platform features. So what are the *diffs* in this updated example?
 
-## OAuth Token
+---
 
-Your OAuth access token should begins with `-xoxb` (or `-xoxa`), instead of `-xoxp`. User tokens will be deprecated.
+*Updated on: December 2019*
+
+## OAuth Scopes and Permission
+
+We’ve made major improvements to the way scopes work for apps. 
+The `bot` scope used to be very broad and permissive, but now you can request more specific and granular permissions for your app. 
+
+This sample app used to need only `bot` scope, but now you need the `channels:read` scope so that bot can read the channel name changes, 
+and `chat:write` to post messages in channels. But no other actions. 
+
+We recommend selecting only the scopes your app needs. Requesting too many scopes can cause your app to be restricted by a team’s Admin or App Manager.
+
+Please read [Scopes and permissions](https://api.slack.com/scopes) to figure out which scopes you need. 
+
+
+## Block Kit
+
+We introduced Block Kit UI framework that allows you to create messages with the components called blocks. 
+If you have been creating messages with the legacy "attatchment", please consider switching to Blcok Kit! 
+
+Read more at: [Block Kit](https://api.slack.com/block-kit)
+
+---
+
+*Updated on: October 2018*
 
 ## Sigining Secret 
 
