@@ -13,7 +13,10 @@ An example app that helps enforce channel naming conventions.
 
 ## Setup
 
-### 1. Remix this Glitch repo
+### 1. Clone this repo, or remix this on Glitch
+
+> git clone https://github.com/slackapi/template-channel-naming.git
+
 [![Remix on Glitch](https://cdn.glitch.com/2703baf2-b643-4da7-ab91-7ee2a2d00b5b%2Fremix-button.svg)](https://glitch.com/edit/#!/remix/slack-channel-naming-blueprint)
 
 ### 2. Create a Slack app
