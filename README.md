@@ -23,7 +23,7 @@ An example app that helps enforce channel naming conventions.
 
 1. Create an app at [https://api.slack.com/apps](https://api.slack.com/apps)
 1. At **Bot Users**, add a new bot user.
-1. Click on **OAuth & Permissions** and select the following scopes: `chat:write`, `channels:read`, `channels:join`
+1. Click on **OAuth & Permissions** and select the following scopes: `chat:write`, `channels:read`, `chat:write.public`
 1. Enable the interactive messages (See below *Enable Interactive Messages*)
 1. Enable events (See below *Enable the Events API*)
 1. Click 'Save Changes' and install the app to all channels (You should get an OAuth access token after the installation

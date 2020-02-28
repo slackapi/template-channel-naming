@@ -12,28 +12,7 @@ const postResult = (result) => {
     console.log(result.data);
 };
 
-const joinChannel = async (channelId, url) => {
-    const postURL = url || `${apiUrl}/conversations.join`;
-    const body = {
-        token: process.env.SLACK_ACCESS_TOKEN,
-        channel: channelId,
-    };
-    const params = qs.stringify(body);
-    return axios.post(postURL, params);
-};
-
-const sendMessage = async (message, url) => {
-    console.log('now joining');
-    try {
-        const result = await joinChannel(message.channel);
-        console.log(result);
-    }
-    catch (error) {
-        console.log();
-    }
-
-    console.log('now posting');
-
+const sendMessage = (message, url) => {
     const postURL = url || `${apiUrl}/chat.postMessage`;
     const params = url ? message : qs.stringify(message);
     const postMessage = axios.post(postURL, params);
