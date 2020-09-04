@@ -1,38 +1,34 @@
 # What's New? - Updates from the Previous Example
 
-Now all the Blueprints examples have been updated with new Slack platform features also switched to the [workspace token](https://api.slack.com/docs/working-with-workspace-tokens) model. So what are the *diffs* in this updated example?
+Now all the Blueprints examples have been updated with new Slack platform features. So what are the *diffs* in this updated example?
 
-So what are the *diffs* in this updated example?
+---
 
-## Creating an app
+*Updated on: December 2019*
 
-To create a new "workspace app" at [https://api.slack.com/apps?new_app_token=1](https://api.slack.com/apps?new_app_token=1), instead of using the previous App creation page.
+## OAuth Scopes and Permission
 
-## OAuth Scopes
+We’ve made major improvements to the way scopes work for apps. 
+The `bot` scope used to be very broad and permissive, but now you can request more specific and granular permissions for your app. 
 
-Some scopes are no longer valid with workspace apps.
+This sample app used to need only `bot` scope, but now you need the `channels:read` scope so that bot can read the channel name changes, 
+and `chat:write` to post messages in channels. But no other actions. 
 
-In previous example, these scopes were required:
-* `chat:write:bot`
+We recommend selecting only the scopes your app needs. Requesting too many scopes can cause your app to be restricted by a team’s Admin or App Manager.
 
-In the new version, you need to enable:
-* `chat:write` 
-
-Notice that the `bot` scope is no longer supported because there is a no "bot user" for the new workspace apps.
-
-You can learn more about scopes at [https://api.slack.com/scopes](https://api.slack.com/scopes)
-
-## OAuth Token
-
-Your OAuth access token should begins with `-xoxa`, instead of `-xoxp`.
+Please read [Scopes and permissions](https://api.slack.com/scopes) to figure out which scopes you need. 
 
 
-## Installation and Permission
+## Block Kit
 
-When a user is installing your app, the user will be ask to choose which channel(s) to install. After the installation, the app name appears under "Apps" at the menu pane on Slack client, and this is now called `app_home`, a where your app can send DM to the user who installed your app. 
+We introduced Block Kit UI framework that allows you to create messages with the components called blocks. 
+If you have been creating messages with the legacy "attatchment", please consider switching to Blcok Kit! 
 
-With the new permission model, your app is only available on the channels that your app is installed, therefore, to make this app behave correclty, *i.e.* to listen to the `channel_created` event from a brand-new channel, you need to install this app to *all* channels.
+Read more at: [Block Kit](https://api.slack.com/block-kit)
 
+---
+
+*Updated on: October 2018*
 
 ## Sigining Secret 
 
