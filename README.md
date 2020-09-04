@@ -28,7 +28,15 @@ An example app that helps enforce channel naming conventions.
 1. Enable events (See below *Enable the Events API*)
 1. Click 'Save Changes' and install the app to all channels (You should get an OAuth access token after the installation
 
-#### Enable Interactive Messages
+#### 3. Run locally or [![Remix on Glitch](https://cdn.glitch.com/2703baf2-b643-4da7-ab91-7ee2a2d00b5b%2Fremix-button.svg)](https://glitch.com/edit/#!/remix/slack-channel-naming-blueprint)
+1. Set the following environment variables in `.env` (copy from `.env.sample`):
+    * `SLACK_ACCESS_TOKEN`: Your app's `xoxa-` token (available on the Install App page)
+    * `SLACK_SIGNING_SECRET`: Your app's Verification Token (available on the Basic Information page)
+    * `PORT`: The port that you want to run the web server on (Default: 5000)
+1. If you're running the app locally:
+    * Start the app (`npm start`)
+
+### 4. Enable Interactive Messages
 1. Click on **Interactive Components** and enable the feature.
 1. Set the Request URL to your server URL + `/interactions`
 
@@ -40,13 +48,3 @@ If you did "Remix" on Glitch, it auto-generate a new URL with two random words, 
 1. On the same page, scroll down to *Subscribe to Bot Events* and subscribe to the `channel_created` and `channel_rename` events.
 
 
-## Run this App
-
-Set Environment Variables and run:
-
-1. Set the following environment variables in `.env` (copy from `.env.sample`):
-    * `SLACK_TOKEN`: Your app's `xoxb-` token (available on the Install App page)
-    * `SLACK_VERIFICATION_TOKEN`: Your app's Verification Token (available on the Basic Information page)
-1. If you're running the app locally, run the app (`npm start`). Or if you're using Glitch, it automatically starts the app.
-
-1. On Slack client, create a new channel
