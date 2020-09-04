@@ -16,10 +16,5 @@
     "node-json-db": "^0.7.3",
     "querystring": "^0.2.0",
     "tsscmp": "^1.0.6"
-  },
-  "devDependencies": {
-    "eslint": "^6.8.0",
-    "eslint-config-airbnb-base": "^14.0.0",
-    "eslint-plugin-import": "^2.20.1"
   }
 }

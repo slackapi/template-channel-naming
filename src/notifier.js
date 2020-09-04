@@ -1,5 +1,3 @@
-// 'use strict';
-
 const qs = require('querystring');
 const axios = require('axios');
 const JsonDB = require('node-json-db');
@@ -8,15 +6,11 @@ const templatesDB = new JsonDB('templates', true, false);
 
 const apiUrl = 'https://slack.com/api';
 
-const postResult = (result) => {
-    console.log(result.data);
-};
-
 const sendMessage = (message, url) => {
     const postURL = url || `${apiUrl}/chat.postMessage`;
     const params = url ? message : qs.stringify(message);
     const postMessage = axios.post(postURL, params);
-    postMessage.then(postResult).catch(postResult);
+    postMessage.then().catch();
 };
 
 const sendNotFound = (channelId, templateName) => {

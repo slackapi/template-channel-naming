@@ -6,10 +6,7 @@ const signature = require('./verifySignature');
 const channelTemplate = require('./channel_template');
 const notifier = require('./notifier');
 
-// const apiUrl = 'https://slack.com/api';
-
 const app = express();
-
 
 /*
 * Parse application/x-www-form-urlencoded && application/json
@@ -76,7 +73,6 @@ app.post('/events', (req, res) => {
 *      selecting a parent channel.
 */
 app.post('/interactions', (req, res) => {
-    // const body = JSON.parse(req.body.payload);
 
     if (!signature.isVerified(req)) {
         res.sendStatus(404);
@@ -84,8 +80,6 @@ app.post('/interactions', (req, res) => {
     else {
         const { channel, actions, response_url: responseURL } = JSON.parse(req.body.payload);
         const action = actions[0];
-
-        console.log(action);
 
         if (/parent_/i.test(action.action_id)) { // After "Add", set primary channel for the template
             res.send('');
