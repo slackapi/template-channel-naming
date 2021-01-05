@@ -8,7 +8,7 @@
   },
   "author": "Sachin Ranchod & Tomomi Imura <opensource@slack.com>",
   "dependencies": {
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "axios-debug-log": "^0.3.0",
     "body-parser": "^1.19.0",
     "dotenv": "^4.0.0",
