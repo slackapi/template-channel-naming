@@ -10,9 +10,9 @@
   "dependencies": {
     "axios": "^0.19.0",
     "axios-debug-log": "^0.3.0",
-    "body-parser": "^1.19.0",
+    "body-parser": "^1.20.1",
     "dotenv": "^4.0.0",
-    "express": "^4.17.1",
+    "express": "^4.18.2",
     "node-json-db": "^0.7.3",
     "querystring": "^0.2.0",
     "tsscmp": "^1.0.6"
